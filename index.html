@@ -53,6 +53,10 @@ table.kimi-table thead th{position:sticky;top:0;z-index:3;background:#f2f3f5}
 #tbl td:nth-child(2),#tbl th:nth-child(2){position:sticky;left:0;z-index:2;background:#fff;box-shadow:2px 0 0 var(--kimi-color-border)}
 #tbl thead th:nth-child(2){z-index:4;background:#f2f3f5}
 #tbl tr.wn td:nth-child(2){background:color-mix(in srgb,var(--kimi-color-accent) 10%,#fff)}
+@media (max-width:720px){
+table.kimi-table{font-size:11px}
+table.kimi-table th,table.kimi-table td{padding:5px 6px}
+}
 table.kimi-table th{cursor:pointer;user-select:none;white-space:nowrap}
 table.kimi-table td{white-space:nowrap}
 tr.wn td{background:color-mix(in srgb,var(--kimi-color-accent) 10%,transparent);font-weight:500}
@@ -357,6 +361,16 @@ function renderTable(){
       renderTable();
     };
   });
+  fitTbl();
+}
+
+function fitTbl(){
+  const tbl=document.getElementById("tbl"), wrap=tbl.closest(".tblwrap");
+  tbl.style.zoom="";
+  if(window.innerWidth<=720){
+    const cw=wrap.clientWidth, tw=wrap.scrollWidth;
+    if(tw>cw) tbl.style.zoom=Math.max(cw/tw,0.45).toFixed(3);
+  }
 }
 
 function renderAll(){ renderKPIs(); renderScatter(); renderBars(); renderYears(); renderTable(); }
@@ -371,7 +385,7 @@ document.querySelectorAll("#univ .kimi-chip").forEach(ch=>{
 renderAll();
 renderStrat();
 renderQuant();
-window.addEventListener("resize", ()=>{ renderScatter(); renderStrat(); renderQuant(); });
+window.addEventListener("resize", ()=>{ renderScatter(); renderStrat(); renderQuant(); fitTbl(); });
 </script>
 </body>
 </html>
