@@ -71,7 +71,11 @@ tr.wn td:first-child{border-left:3px solid var(--kimi-color-accent)}
 <div class="wrap">
   <div class="kimi-row" style="justify-content:space-between;align-items:baseline;flex-wrap:wrap">
     <div class="kimi-page-title">维纳1号 · 同业对比</div>
-    <div class="kimi-meta">截至 2026-08-28 · 403 只私募产品 · 来源：微信长图(2023.8.28~2026.8.28)；维纳1号净值与指数截至2026-08-28</div>
+    <div style="display:flex;align-items:center;gap:var(--kimi-space-3);flex-wrap:wrap">
+      <div class="kimi-meta">截至 2026-08-28 · 403 只私募产品 · 来源：微信长图(2023.8.28~2026.8.28)；维纳1号净值与指数截至2026-08-28</div>
+      <span class="kimi-meta" id="updStatus"></span>
+      <button class="kimi-button kimi-button--primary" id="updBtn" type="button">更新同业数据</button>
+    </div>
   </div>
   <div class="kimi-row" style="justify-content:space-between;flex-wrap:wrap;gap:var(--kimi-space-2)">
     <div class="kimi-segmented" aria-label="对比范围" id="univ">
@@ -386,6 +390,39 @@ renderAll();
 renderStrat();
 renderQuant();
 window.addEventListener("resize", ()=>{ renderScatter(); renderStrat(); renderQuant(); fitTbl(); });
+</script>
+<script>
+(function(){
+  var host = window.DaimonWidget;
+  var btn = document.getElementById && document.getElementById('updBtn');
+  var statusEl = document.getElementById && document.getElementById('updStatus');
+  if (!host || !btn || !statusEl) { if (btn) btn.style.display = 'none'; return; }
+  if (typeof host.emit !== 'function') { btn.style.display = 'none'; return; }
+  function renderStatus(){
+    var s = host.status;
+    if (s === 'running') {
+      btn.disabled = true;
+      btn.textContent = '更新中…';
+      statusEl.textContent = '后台正在读取长图并重建数据，约需十几分钟，完成后自动刷新';
+    } else {
+      btn.disabled = false;
+      btn.textContent = '更新同业数据';
+      if (s === 'error') statusEl.textContent = '上次更新失败，可点击重试';
+      else if (s === 'cancelled') statusEl.textContent = '上次更新已取消，可点击重试';
+    }
+  }
+  function renderData(d){
+    var m = (d && d.main) || (host.data && host.data.main);
+    if (m && m.summary) statusEl.textContent = m.summary;
+  }
+  btn.addEventListener('click', function(){
+    try { host.saveInput && host.saveInput({ trigger: 'button' }); } catch (e) {}
+    host.emit('submit', { trigger: 'button' });
+  });
+  renderStatus();
+  if (typeof host.onStatusChange === 'function') host.onStatusChange(renderStatus);
+  if (typeof host.onDataChange === 'function') host.onDataChange(renderData);
+})();
 </script>
 </body>
 </html>
