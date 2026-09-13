@@ -331,7 +331,7 @@ function renderQuant(){
 
 const COLS = [
   {k:null, lb:"#", num:true}, {k:"prod", lb:"产品"}, {k:"mg", lb:"机构"}, {k:"st", lb:"策略"},
-  {k:"w1", lb:"近一周", num:true}, {k:"m1", lb:"近一月", num:true}, {k:"mtd", lb:"当月", num:true}, {k:"ytd", lb:"今年以来", num:true},
+  {k:"w1", lb:"近一周", num:true}, {k:"m1", lb:"近一月", num:true}, {k:"ytd", lb:"今年以来", num:true},
   {k:"y1", lb:"近一年", num:true}, {k:"dd", lb:"当年回撤", num:true}, {k:"ann", lb:"年化收益", num:true},
   {k:"y25", lb:"2025", num:true}, {k:"y24", lb:"2024", num:true}, {k:"y23", lb:"2023", num:true}
 ];
@@ -355,7 +355,7 @@ function renderTable(){
       <td>${a.weina?'<span class="num">'+a.n+'</span><span class="tag">本基金</span>':a.n}</td>
       <td class="kimi-meta">${a.mg||'-'}</td>
       <td class="kimi-meta">${a.st}</td>
-      ${["w1","m1","mtd","ytd","y1","dd","ann","y25","y24","y23"].map(k=>`<td class="kimi-number ${a[k]===null||a[k]===undefined?'':cls(k==='dd'?-a[k]:a[k])}">${fmt(a[k])}</td>`).join("")}
+      ${["w1","m1","ytd","y1","dd","ann","y25","y24","y23"].map(k=>`<td class="kimi-number ${a[k]===null||a[k]===undefined?'':cls(k==='dd'?-a[k]:a[k])}">${fmt(a[k])}</td>`).join("")}
     </tr>`;
   });
   tbl.innerHTML = h + "</tbody>";
