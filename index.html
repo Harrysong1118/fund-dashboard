@@ -142,7 +142,7 @@ const UNIV = {
 const isQuant = UNIV.quant.f;
 let curUniv = "subj";
 const METRICS = [
-  {k:"w1", lb:"近一周收益"}, {k:"m1", lb:"近一月收益(滚动)"}, {k:"mtd", lb:"当月收益(月末起)"}, {k:"ytd", lb:"今年以来收益"},
+  {k:"w1", lb:"近一周收益"}, {k:"m1", lb:"近一月收益(滚动)"}, {k:"ytd", lb:"今年以来收益"},
   {k:"y1", lb:"近一年收益"}, {k:"dd", lb:"当年最大回撤", inv:true}, {k:"ann", lb:"年化收益(成立以来)"}
 ];
 const fmt = v => (v===null||v===undefined||isNaN(v)) ? "—" : (v>0?"+":"") + v.toFixed(2) + "%";
@@ -157,7 +157,8 @@ function rankOf(list, k, inv){
 }
 
 document.getElementById("bench").innerHTML = "同期指数基准：" + IDXS.map(i=>
-  `<span>${i.n} <b class="num ${cls(i.ytd)}">${fmt(i.ytd)}</b> <span class="kimi-meta">今年以来</span></span>`).join("");
+  `<span>${i.n} <b class="num ${cls(i.ytd)}">${fmt(i.ytd)}</b> <span class="kimi-meta">今年以来</span></span>`).join("")
+  + `<span>维纳1号 <b class="num ${cls(W.mtd)}">${fmt(W.mtd)}</b> <span class="kimi-meta">当月(月末起)</span></span>`;
 
 function renderKPIs(){
   const peers = universePeers();
