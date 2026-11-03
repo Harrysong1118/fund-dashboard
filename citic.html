@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中信主观产品对比 · 维纳1号</title>
+<style>
+:root{--red:#C7000B;--dark:#7a0c14;--gold:#b8860b;--goldbg:#fff8e6;--line:#e5e0dc;--pos:#d43d2a;--neg:#1a9e54;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#faf8f6;color:#2b2b2b;font-size:13px;}
+.wrap{max-width:1560px;margin:0 auto;padding:18px 22px 40px;}
+h1{font-size:22px;color:var(--dark);letter-spacing:1px;}
+.meta{color:#8a7f78;font-size:12px;margin:6px 0 16px;line-height:1.7;}
+.panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:18px;box-shadow:0 1px 4px rgba(90,60,40,.04);}
+.whead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+.whead .nm{font-size:18px;font-weight:700;color:var(--gold);}
+.whead .nv{font-size:16px;font-weight:600;}
+.chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;}
+.chip{background:var(--goldbg);border:1px solid #ecd9ac;border-radius:8px;padding:8px 10px;}
+.chip .lb{font-size:11px;color:#96805a;}
+.chip .vl{font-size:16px;font-weight:700;margin-top:2px;}
+.sec{margin-top:26px;}
+.sec h2{font-size:16px;color:var(--dark);border-left:4px solid var(--red);padding-left:9px;margin-bottom:10px;}
+.sec h2 small{color:#a08f85;font-weight:400;font-size:12px;margin-left:8px;}
+.toolbar{display:flex;align-items:center;gap:8px;margin:4px 0 12px;color:#8a7f78;font-size:12px;flex-wrap:wrap;}
+select{padding:3px 8px;border:1px solid var(--line);border-radius:6px;background:#fff;color:#444;}
+.tblwrap{overflow-x:auto;}
+table{border-collapse:collapse;width:100%;min-width:1240px;}
+th{background:var(--red);color:#fff;font-weight:500;font-size:12px;padding:7px 8px;white-space:nowrap;text-align:center;}
+td{padding:6px 8px;border-bottom:1px solid #f0e9e4;text-align:center;white-space:nowrap;}
+td.l{text-align:left;}
+tbody tr:nth-child(even){background:#fcf9f7;}
+tbody tr:hover{background:#f6eee9;}
+tr.weina{background:var(--goldbg)!important;font-weight:600;}
+tr.weina td{border-top:1px solid #e3cf9d;border-bottom:1px solid #e3cf9d;}
+.pos{color:var(--pos);} .neg{color:var(--neg);}
+.tag{display:inline-block;background:#f3e7e4;color:#8a4b3c;border-radius:4px;padding:0 5px;font-size:11px;}
+.chart{display:flex;flex-direction:column;gap:3px;margin:8px 0 4px;}
+.barrow{display:grid;grid-template-columns:210px 1fr 62px;align-items:center;gap:8px;font-size:12px;}
+.barwrap{height:13px;background:#f4efec;border-radius:3px;position:relative;}
+.bar{position:absolute;top:0;bottom:0;background:var(--red);border-radius:3px;opacity:.82;}
+.bar.negbar{background:var(--neg);}
+.bar.wbar{background:var(--gold);opacity:1;}
+.barval{font-weight:600;text-align:right;}
+.zero{position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:#cbb9ac;}
+.note{color:#a08f85;font-size:11px;margin-top:18px;line-height:1.8;}
+a.home{color:var(--red);font-size:12px;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>中信主观产品对比 <span style="font-size:14px;color:#a08f85;font-weight:400;">维纳1号 vs 中信主观私募池</span></h1>
+  <div class="meta" id="meta"></div>
+  <div class="panel" id="weinaCard"></div>
+  <div class="toolbar">排序指标：
+    <select id="sortSel">
+      <option value="w1">本周收益（周报原序）</option>
+      <option value="m1">本月收益</option>
+      <option value="ytd">今年以来收益</option>
+      <option value="y1r">近一年收益</option>
+      <option value="ann">成立以来年化收益</option>
+    </select>
+    <span>每组表格首行固定维纳1号（金色）作对照；图表为今年以来收益，金色为维纳1号。</span>
+    <a class="home" href="index.html">← 返回同业对比看板</a>
+  </div>
+  <div id="secs"></div>
+  <div class="note">口径：本周=2026-10-19至10-23；本月=上月末净值起算；今年以来=2025年末净值起算；近一年/成立以来各项指标取自周报原文。维纳1号近一年与成立以来的最大回撤、夏普、卡玛由净值序列重算（收益按各净值披露区间年化，无风险利率按0），与周报口径可能略有差异。数据仅供参考，历史业绩不代表未来。</div>
+</div>
+<script>
+const DATA = {"asOf": "2026-10-23", "source": "主观私募基金业绩追踪周报（业绩期间2026-10-19至2026-10-23）", "weina": {"mg": "彤心雕珑", "pm": "童卓", "scale": "—", "name": "维纳1号", "inc": "2023-08-09", "nav": 1.5683, "w1": -3.61, "m1": -13.5, "ytd": 5.57, "y1r": 7.48, "y1dd": -34.83, "y1sharpe": 0.38, "ann": 15.06, "dd": -34.83, "sharpe": 0.71, "calmar": 0.43}, "groups": [{"style": "积极成长", "rows": [["丹羿", "朱亮", "5-10亿", "丹羿精选12号1期", "2022-04-19", 0.78, 4.23, -5.41, -22.71, -22.9, -29.64, -0.89, -5.32, -32.04, -0.34, -0.17, "积极成长"], ["远望角", "曾实", "5-10亿", "远望角容远11号", "2020-04-16", 1.39, 0.1, -7.33, -19.0, -14.4, -25.4, -0.5, 5.22, -25.4, 0.27, 0.21, "积极成长"], ["睿扬", "彭砚", "50-100亿", "睿扬精选7号A期", "2020-12-11", 1.45, -0.5, -1.21, 53.27, 44.79, -25.13, 1.41, 5.85, -44.87, 0.32, 0.13, "积极成长"], ["望正", "王鹏辉", "50-100亿", "望正精英-鹏辉1期", "2015-05-20", 2.54, -1.2, -12.91, -13.29, -11.49, -42.69, -0.29, 8.65, -42.69, 0.39, 0.2, "积极成长"], ["趣时", "章秀奇", "50-100亿", "趣时价值成长1号A期", "2020-09-23", 1.0, -2.28, -10.34, 11.13, 17.45, -44.99, 0.43, -0.05, -45.71, -0.0, -0.0, "积极成长"]]}, {"style": "质量成长", "rows": [["远信", "周伟锋", "100亿", "远信中国价值成长16号1期", "2022-03-11", 1.24, 7.91, -0.41, -10.28, -14.05, -23.24, -0.57, 4.85, -38.32, 0.22, 0.13, "质量成长"], ["合远", "庄琰", "50-100亿", "合远信正启实9号1期", "2022-12-07", 1.37, 1.19, -2.04, 0.74, 6.1, -27.57, 0.21, 8.65, -27.57, 0.43, 0.31, "质量成长"], ["石锋", "崔红建", "20-50亿", "石锋资产厚积1号A期", "2020-01-15", 1.03, 0.01, 0.01, -1.59, -2.22, -4.43, -0.56, 0.48, -51.05, 0.03, 0.01, "质量成长"], ["源乐晟", "杨建海", "100亿", "源乐晟新晟6号1期", "2021-09-03", 1.8, -0.39, -4.28, 26.06, 52.77, -24.73, 1.81, 11.56, -42.29, 0.56, 0.27, "质量成长"], ["勤辰", "崔莹", "100亿", "勤辰创赢成长5号A期", "2022-09-20", 2.09, -0.72, -3.52, 35.64, 45.99, -19.27, 1.7, 20.15, -19.27, 1.19, 1.05, "质量成长"], ["远信", "谢振东", "100亿", "中信资本中国价值回报1号1期", "2021-07-14", 1.01, -0.75, -5.47, -17.23, -15.38, -21.94, -1.17, 0.23, -29.29, 0.02, 0.01, "质量成长"], ["源乐晟", "曾晓洁", "100亿", "源乐晟-晟世7号", "2020-03-04", 3.27, -1.12, -11.0, 41.09, 78.01, -40.54, 1.76, 19.79, -58.25, 0.68, 0.34, "质量成长"], ["聚鸣", "刘晓龙", "100亿", "聚鸣涌金6号", "2020-04-30", 2.04, -1.33, -8.48, 8.8, 15.25, -36.13, 0.46, 10.41, -40.45, 0.47, 0.26, "质量成长"], ["和谐汇一", "林鹏", "50-100亿", "和谐汇一远景3号1期", "2020-10-28", 1.66, -1.66, -6.25, -5.24, -4.4, -17.66, -0.21, -3.63, -50.34, -0.16, -0.07, "质量成长"], ["聚鸣", "王文祥", "100亿", "聚鸣匠传16号A期", "2021-11-17", 1.97, -1.99, -15.97, 5.06, 10.03, -35.71, 0.28, 13.04, -35.71, 0.52, 0.37, "质量成长"], ["合远", "管华雨", "50-100亿", "合远信正雨鸿1期", "2022-07-04", 0.8, -2.0, -13.59, -12.7, -7.93, -35.28, -0.25, -5.02, -35.28, -0.25, -0.14, "质量成长"], ["盘京", "庄涛", "100亿", "盘京盛信1期", "2016-12-14", 3.21, -2.08, -9.15, -11.47, -11.05, -32.63, -0.36, 15.47, -44.23, 0.74, 0.35, "质量成长"], ["盘京", "崔同魁", "100亿", "盘京盛信17期", "2022-01-11", 0.91, -2.25, -9.38, -13.94, -15.41, -34.49, -0.52, -1.92, -34.49, -0.11, -0.06, "质量成长"], ["拾贝", "胡建平", "20-50亿", "拾贝精选2期", "2015-02-03", 2.02, -2.42, -6.91, -25.52, -25.83, -31.18, -1.31, 6.23, -31.59, 0.36, 0.2, "质量成长"], ["盘京", "陈勤", "100亿", "盘京天道7期", "2019-10-30", 1.68, -3.08, -8.79, -4.66, 2.46, -26.1, 0.1, 8.26, -42.43, 0.46, 0.19, "质量成长"], ["勤辰", "林森", "100亿", "勤辰森裕3号1期", "2024-07-18", 0.92, -3.48, -5.02, -23.82, -22.89, -27.67, -1.47, -3.83, -27.67, -0.22, -0.14, "质量成长"], ["煜德", "靳天珍", "20-50亿", "乐道成长优选3号", "2015-08-18", 2.13, -3.54, -12.03, -9.57, -7.78, -24.2, -0.36, 7.1, -41.03, 0.4, 0.17, "质量成长"], ["高毅", "吴任昊", "100亿", "高毅任昊精选承", "2021-03-24", 0.92, -3.61, -7.9, -4.13, -2.37, -17.31, -0.13, -1.15, -32.3, -0.07, -0.04, "质量成长"], ["高毅", "孙庆瑞", "100亿", "高毅庆瑞优选瑞", "2021-01-22", 0.74, -3.66, -10.14, -8.89, -5.13, -30.91, -0.2, -5.21, -58.54, -0.26, -0.09, "质量成长"], ["瓴仁", "陈浩", "100亿", "瓴仁致远长青", "2021-11-16", 1.32, -4.24, -11.82, -13.98, -12.41, -20.74, -0.65, 5.85, -20.74, 0.39, 0.28, "质量成长"], ["慎知", "余海丰", "100亿", "慎知6号信享A", "2021-04-12", 1.1, -5.84, -19.23, -17.52, -9.73, -35.05, -0.37, 1.83, -35.05, 0.1, 0.05, "质量成长"]]}, {"style": "质量价值", "rows": [["仁桥", "夏俊杰", "100亿", "仁桥泽源信享1期", "2020-07-14", 1.58, -1.15, -2.83, -12.1, -12.01, -20.98, -0.89, 7.68, -23.43, 0.5, 0.33, "质量价值"], ["睿璞", "蔡海洪", "50-100亿", "睿璞投资-睿康1期", "2020-02-26", 1.47, -2.76, -3.27, -14.73, -17.29, -21.91, -1.26, 5.96, -41.44, 0.34, 0.14, "质量价值"], ["宁泉", "余璟钰", "100亿", "宁泉致远55号1期", "2021-07-07", 1.06, -3.11, -6.08, -18.01, -20.83, -23.12, -1.56, 1.16, -23.46, 0.09, 0.05, "质量价值"], ["日斗", "王文", "100亿", "日斗信享红利价值1期", "2024-08-22", 1.01, -3.88, -5.14, -19.35, -19.37, -23.15, -1.07, 0.39, -23.15, 0.02, 0.02, "质量价值"]]}, {"style": "护城河投资", "rows": [["易同", "朱龙洋", "0-5亿", "易同精选十一期", "2022-01-11", 1.27, -2.79, -1.7, -6.95, -6.44, -15.12, -0.5, 5.22, -22.33, 0.38, 0.23, "护城河投资"], ["静瑞", "余小波", "50-100亿", "静瑞至信价值灵动1号", "2024-10-31", 1.14, -4.32, -7.18, -16.96, -14.75, -21.68, -0.91, 4.1, -21.68, 0.23, 0.19, "护城河投资"]]}, {"style": "GARP", "rows": [["远信", "黄垲锐", "100亿", "远信中国优质企业逆向策略1期", "2023-07-05", 1.35, -0.36, 0.06, -0.96, 2.1, -21.09, 0.11, 9.68, -21.09, 0.53, 0.46, "GARP偏成长"], ["奇盛", "付伟琦", "0-5亿", "奇盛价值前瞻10号", "2024-05-24", 0.86, -0.98, -1.72, -23.77, -27.01, -28.48, -2.05, -6.08, -30.55, -0.45, -0.2, "GARP"], ["睿郡", "杜昌勇", "100亿", "睿郡22号A期", "2021-12-17", 1.1, -1.4, -3.2, -4.8, -6.94, -12.89, -0.52, 1.96, -25.42, 0.13, 0.08, "GARP"], ["红筹", "邹奕", "50-100亿", "红筹8号", "2020-04-14", 2.19, -1.49, -4.38, 0.82, 1.28, -21.91, 0.07, 12.97, -36.54, 0.59, 0.35, "GARP偏价值"], ["复胜", "陆航", "100亿", "复胜正能量五号", "2022-04-29", 1.85, -2.53, -1.5, 11.86, 14.18, -19.8, 0.48, 15.91, -20.36, 0.71, 0.78, "GARP偏成长"], ["中欧瑞博", "吴伟志", "0-亿", "中欧瑞博35期1号", "2020-06-01", 1.38, -2.72, -5.28, -18.02, -21.5, -25.98, -1.26, 5.23, -26.83, 0.34, 0.2, "GARP偏成长"], ["康曼德", "丁楹", "50-100亿", "康曼德106号", "2014-12-16", 1.66, -3.05, -15.73, -19.27, -23.06, -31.45, -0.9, 5.97, -31.45, 0.3, 0.19, "GARP"], ["高毅", "邓晓峰", "100亿", "高毅-晓峰1号睿", "2015-04-24", 5.99, -3.99, -6.66, -9.01, -4.59, -15.13, -0.3, 17.49, -24.26, 0.98, 0.72, "GARP偏成长"], ["睿泉", "吕一凡", "5-10亿", "睿泉成长2号", "2019-04-18", 1.44, -4.37, -7.49, -16.91, -18.72, -32.88, -0.82, 5.08, -43.7, 0.24, 0.12, "GARP"]]}, {"style": "风格不明显", "rows": [["睿郡", "董承非", "100亿", "睿郡承非众享1期", "2022-05-09", 1.5, 4.04, 2.0, 4.27, 0.56, -11.04, 0.04, 9.7, -17.68, 0.7, 0.55, "不明显"]]}]};
+const W = DATA.weina;
+const F = {
+  mg:"管理人",pm:"投资经理",scale:"规模",name:"产品名称",inc:"成立日期",nav:"累计净值",
+  w1:"本周收益",m1:"本月收益",ytd:"今年以来收益",
+  y1r:"近一年收益",y1dd:"近一年最大回撤",y1sharpe:"近一年年化夏普",
+  ann:"成立以来年化收益",dd:"成立以来最大回撤",sharpe:"成立以去年化夏普",calmar:"成立以去年化卡玛"
+};
+const COLS = ["mg","pm","scale","name","inc","nav","w1","m1","ytd","y1r","y1dd","y1sharpe","ann","dd","sharpe","calmar"];
+const PCT = new Set(["w1","m1","ytd","y1r","y1dd","ann","dd"]);
+const RATIO = new Set(["y1sharpe","sharpe","calmar"]);
+const WKEYS = ["mg","pm","scale","name","inc","nav","w1","m1","ytd","y1r","y1dd","y1sharpe","ann","dd","sharpe","calmar"];
+const fmtPct = v => v==null?"—":(v>0?"+":"")+v.toFixed(2)+"%";
+const fmtRat = v => v==null?"—":v.toFixed(2);
+const cls = v => v==null?"":(v>=0?"pos":"neg");
+const cell = (k,v) => PCT.has(k)?`<td class="${cls(v)}">${fmtPct(v)}</td>`:RATIO.has(k)?`<td>${fmtRat(v)}</td>`:k==="nav"?`<td>${v}</td>`:k==="name"?`<td class="l">${v}</td>`:`<td>${v}</td>`;
+const rowOf = (r,weina) => {
+  const o = Object.fromEntries(WKEYS.map((k,i)=>[k,r[i]]));
+  return `<tr${weina?' class="weina"':''}>${COLS.map(k=>cell(k,o[k])).join("")}</tr>`;
+};
+document.getElementById("meta").textContent =
+  `截至 ${DATA.asOf} · ${DATA.groups.reduce((s,g)=>s+g.rows.length,0)} 只中信主观产品 · 来源：${DATA.source}；维纳1号净值截至${DATA.asOf}`;
+document.getElementById("weinaCard").innerHTML = `
+  <div class="whead"><span class="nm">维纳1号（彤心雕珑 · 童卓）</span><span class="nv">累计净值 ${W.nav}</span><span style="color:#a08f85;font-size:12px;">成立 ${W.inc}</span></div>
+  <div class="chips">${[["本周",W.w1],["本月(上月末起)",W.m1],["今年以来",W.ytd],["近一年收益",W.y1r],["近一年最大回撤",W.y1dd],["近一年夏普",W.y1sharpe],["成立以来年化",W.ann],["成立以来最大回撤",W.dd],["成立以来夏普",W.sharpe],["成立以来卡玛",W.calmar]].map(([lb,v])=>{
+    const isPct = !["近一年夏普","成立以来夏普","成立以来卡玛"].includes(lb);
+    return `<div class="chip"><div class="lb">${lb}</div><div class="vl ${isPct?cls(v):""}">${isPct?fmtPct(v):fmtRat(v)}</div></div>`;
+  }).join("")}</div>`;
+function render(sortKey){
+  const desc = sortKey!=="w1";
+  document.getElementById("secs").innerHTML = DATA.groups.map(g=>{
+    const rows = [...g.rows];
+    if(desc) rows.sort((a,b)=>b[WKEYS.indexOf(sortKey)]-a[WKEYS.indexOf(sortKey)]);
+    const chartRows = [...rows, WKEYS.map(k=>W[k])];
+    const vals = chartRows.map(r=>r[WKEYS.indexOf("ytd")]);
+    const maxAbs = Math.max(...vals.map(v=>Math.abs(v)),1);
+    const chart = chartRows.map(r=>{
+      const i = WKEYS.indexOf("ytd"), v = r[i], isW = r[WKEYS.indexOf("name")]==="维纳1号";
+      const w = Math.abs(v)/maxAbs*50;
+      const left = v>=0?50:50-w;
+      return `<div class="barrow"><div class="l" style="overflow:hidden;text-overflow:ellipsis;">${r[WKEYS.indexOf("name")]}</div>
+        <div class="barwrap"><div class="zero"></div><div class="bar ${isW?"wbar":v<0?"negbar":""}" style="left:${left}%;width:${w}%;"></div></div>
+        <div class="barval ${cls(v)}">${fmtPct(v)}</div></div>`;
+    }).join("");
+    return `<div class="sec panel"><h2>${g.style}风格产品<small>${g.rows.length} 只 · 今年以来收益对比</small></h2>
+      <div class="chart">${chart}</div>
+      <div class="tblwrap"><table><thead><tr>${COLS.map(k=>`<th>${F[k]}</th>`).join("")}</tr></thead>
+      <tbody>${rowOf(WKEYS.map(k=>W[k]),true)}${rows.map(r=>rowOf(r,false)).join("")}</tbody></table></div></div>`;
+  }).join("");
+}
+document.getElementById("sortSel").addEventListener("change", e=>render(e.target.value));
+render("w1");
+</script>
+</body>
+</html>
