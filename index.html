@@ -65,6 +65,10 @@ tr.wn td:first-child{border-left:3px solid var(--kimi-color-accent)}
 .bench{display:flex;gap:var(--kimi-space-3);flex-wrap:wrap;font-size:12px;color:var(--kimi-color-text-secondary)}
 .bench b{font-weight:500;color:var(--kimi-color-text-primary)}
 .note{font-size:12px;color:var(--kimi-color-text-tertiary);line-height:18px}
+.searchbox{display:flex;align-items:center;gap:var(--kimi-space-2)}
+.searchbox input{width:260px;max-width:60vw;padding:6px 12px 6px 30px;border:1px solid var(--kimi-color-border);border-radius:var(--kimi-radius-full);font-size:13px;background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%238a8f99" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>') no-repeat 10px center;outline:none;color:var(--kimi-color-text-primary)}
+.searchbox input:focus{border-color:var(--kimi-color-accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--kimi-color-accent) 15%,transparent)}
+.searchbox input::placeholder{color:var(--kimi-color-text-tertiary)}
 </style>
 </head>
 <body>
@@ -126,7 +130,13 @@ tr.wn td:first-child{border-left:3px solid var(--kimi-color-accent)}
     </div>
   </div>
   <div>
-    <div class="kimi-section-title" style="margin-bottom:var(--kimi-space-2)">明细（点击表头排序）</div>
+    <div class="kimi-row" style="justify-content:space-between;flex-wrap:wrap;gap:var(--kimi-space-2);margin-bottom:var(--kimi-space-2)">
+      <div class="kimi-section-title">明细（点击表头排序）</div>
+      <div class="searchbox">
+        <input id="tblSearch" type="search" placeholder="搜产品/机构/策略，或 今年以来>20 回撤>-15" aria-label="搜索明细表中的产品">
+        <span class="kimi-meta num" id="tblCount"></span>
+      </div>
+    </div>
     <div class="tblwrap tblmain"><table class="kimi-table" id="tbl"></table></div>
   </div>
 </div>
@@ -336,7 +346,32 @@ const COLS = [
   {k:"y1", lb:"近一年", num:true}, {k:"dd", lb:"当年回撤", num:true}, {k:"ann", lb:"年化收益", num:true},
   {k:"y25", lb:"2025", num:true}, {k:"y24", lb:"2024", num:true}, {k:"y23", lb:"2023", num:true}
 ];
-let sortK = "y1", sortD = -1;
+let sortK = "y1", sortD = -1, tblQuery = "";
+const METKEY = {"近一周":"w1","周":"w1","近一月":"m1","月":"m1","今年以来":"ytd","今年":"ytd","ytd":"ytd",
+  "近一年":"y1","一年":"y1","回撤":"dd","当年回撤":"dd","年化":"ann","年化收益":"ann",
+  "2025":"y25","2024":"y24","2023":"y23","净值":"nav"};
+function textHit(a,q){
+  return (a.n||"").toLowerCase().includes(q)
+      || (a.mg||"").toLowerCase().includes(q)
+      || (a.st||"").toLowerCase().includes(q);
+}
+function condHit(a,t){
+  const m = t.match(/^([^<>=\d]*)(>=|<=|>|<|=)(-?\d+(?:\.\d+)?)%?$/);
+  if(!m) return null;
+  const key = m[1]==="" ? "ytd" : METKEY[m[1]];
+  if(!key) return null;
+  const v = a[key];
+  if(v===null||v===undefined) return false;
+  const n = parseFloat(m[3]), op = m[2];
+  return op===">"?v>n : op==="<"?v<n : op===">="?v>=n : op==="<="?v<=n : Math.abs(v-n)<1e-9;
+}
+function matchQuery(a){
+  if(!tblQuery) return true;
+  return tblQuery.toLowerCase().split(/\s+/).filter(Boolean).every(t=>{
+    const c = condHit(a,t);
+    return c===null ? textHit(a,t) : c;
+  });
+}
 function renderTable(){
   const tbl = document.getElementById("tbl");
   const peers = universePeers();
@@ -345,7 +380,9 @@ function renderTable(){
     const va = sortK==="prod" ? a.n : a[sortK], vb = sortK==="prod" ? b.n : b[sortK];
     if(va===null||va===undefined) return 1; if(vb===null||vb===undefined) return -1;
     return (va>vb?1:va<vb?-1:0) * (sortK==="prod"?1:sortD);
-  });
+  }).filter(matchQuery);
+  const cnt = document.getElementById("tblCount");
+  if(cnt) cnt.textContent = tblQuery ? `匹配 ${rows.length} / ${peers.length + 1} 只` : `共 ${rows.length} 只`;
   let h = "<thead><tr>" + COLS.map(c=>{
     const arrow = c.k===sortK ? (sortD===-1?" ↓":" ↑") : "";
     return `<th data-k="${c.k||''}" class="${c.num?'kimi-number':''}">${c.lb}${arrow}</th>`;
@@ -387,6 +424,10 @@ document.querySelectorAll("#univ .kimi-chip").forEach(ch=>{
     curUniv = ch.dataset.u;
     renderAll();
   };
+});
+document.getElementById("tblSearch").addEventListener("input", e=>{
+  tblQuery = e.target.value.trim();
+  renderTable();
 });
 renderAll();
 renderStrat();
